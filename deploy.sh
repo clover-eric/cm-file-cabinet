@@ -9,8 +9,8 @@ NC='\033[0m'
 # 设置 GitHub 仓库信息和镜像源
 REPO="clover-eric/cm-file-cabinet"
 BRANCH="main"
-# 使用 Gitee 镜像或其他国内镜像源
-MIRROR_URL="https://gitee.com/${REPO}/raw/${BRANCH}"
+# 使用 Gitee 镜像
+MIRROR_URL="https://gitee.com/your-gitee-username/cm-file-cabinet/raw/${BRANCH}"
 RAW_URL="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
 
 # 下载文件函数，带镜像源支持
