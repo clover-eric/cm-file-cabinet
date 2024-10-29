@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   file-cabinet:
-    build: .
+    image: clovereric/cm-file-cabinet:latest
     container_name: cm-file-cabinet
     restart: always
     ports:
@@ -12,4 +12,4 @@ services:
       - ./logs:/app/logs
       - ./api_keys.json:/app/api_keys.json
     environment:
-      - TZ=Asia/Shanghai 
+      - TZ=Asia/Shanghai

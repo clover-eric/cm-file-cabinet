@@ -2,41 +2,13 @@
 
 一个简单高效的文件中转服务，专为 CM-EdgeTunnel 设计。
 
-## 功能特点
-
-- 🚀 支持拖拽上传文件
-- 📁 自动重命名为标准格式
-- 🔑 API 密钥认证
-- 🔄 自动清理过期文件
-- 📱 响应式设计，支持移动端
-- 🌐 支持跨域访问
-- 🔒 安全的文件存储
-
-## 快速开始
-
-### 一键部署 
+## 一键部署
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/clover-eric/cm-file-cabinet/main/deploy.sh | bash
 ``` 
 
 部署完成后，访问 `http://your-server-ip:5001` 即可使用。
-
-### 手动部署
-
-1. 克隆仓库
-
-```bash
-git clone https://github.com/clover-eric/cm-file-cabinet.git
-cd cm-file-cabinet
-```
-
-2. 使用 Docker Compose 部署
-
-```bash
-docker-compose up -d
-```
-
 
 ## 使用说明
 
