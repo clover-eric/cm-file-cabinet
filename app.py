@@ -130,14 +130,27 @@ def generate_api_key_route():
         # 生成新的 API 密钥
         api_key = generate_api_key()
         
-        # 保存 API 密钥
-        save_api_key(api_key)
+        # 加载现有的 API 密钥
+        try:
+            with open(app.config['API_KEYS_FILE'], 'r') as f:
+                api_keys = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            api_keys = {}
+        
+        # 添加新的 API 密钥
+        api_keys[api_key] = {
+            'created_at': time.time(),
+            'last_used': None
+        }
+        
+        # 保存 API 密钥到文件
+        with open(app.config['API_KEYS_FILE'], 'w') as f:
+            json.dump(api_keys, f)
         
         return jsonify({
             'status': 'success',
             'api_key': api_key
-        }), 200
-        
+        })
     except Exception as e:
         app.logger.error(f"Error generating API key: {e}")
         return jsonify({
