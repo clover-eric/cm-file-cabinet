@@ -17,7 +17,7 @@
 ### 一键部署 
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/your-repo/cm-file-cabinet/main/deploy.sh | bash
+curl -fsSL https://raw.githubusercontent.com/clover-eric/cm-file-cabinet/main/deploy.sh | bash
 ``` 
 
 部署完成后，访问 `http://your-server-ip:5001` 即可使用。
@@ -27,7 +27,8 @@ curl -fsSL https://raw.githubusercontent.com/your-repo/cm-file-cabinet/main/depl
 1. 克隆仓库
 
 ```bash
-git clone https://github.com/your-repo/cm-file-cabinet.git
+git clone https://github.com/clover-eric/cm-file-cabinet.git
+cd cm-file-cabinet
 ```
 
 2. 使用 Docker Compose 部署
