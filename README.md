@@ -2,6 +2,15 @@
 
 一个简单高效的文件中转服务，专为 CM-EdgeTunnel 设计。
 
+## 功能特点
+
+- 简洁的 Web 界面
+- 支持拖拽上传
+- API 集成支持
+- 自动文件清理
+- Docker 容器化部署
+- 国内镜像源支持
+
 ## 一键部署
 
 ```bash
@@ -68,10 +77,18 @@ docker-compose restart
 
 ### 更新服务
 
+方法一：使用更新脚本（推荐）
 ```bash
-docker-compose pull
-docker-compose up -d
+bash <(curl -fsSL https://raw.githubusercontent.com/clover-eric/cm-file-cabinet/main/deploy.sh)
 ```
+
+方法二：手动更新
+bash
+拉取最新镜像
+docker compose pull
+重新构建并启动
+docker compose up -d --build
+
 
 ## 注意事项
 
@@ -84,18 +101,20 @@ docker-compose up -d
 ## 目录结构
 
 cm-file-cabinet/
-├── app.py              # 主应用程序
-├── static/             # 静态资源
-│   ├── css/           # 样式文件
-│   └── js/            # JavaScript 文件
-├── templates/          # HTML 模板
-├── uploads/           # 文件上传目录
-├── logs/              # 日志目录
-├── api_keys.json      # API 密钥存储文件
-├── Dockerfile         # Docker 配置文件
+├── app.py # 主应用程序
+├── static/ # 静态资源
+│ ├── css/ # 样式文件
+│ └── js/ # JavaScript 文件
+├── templates/ # HTML 模板
+├── uploads/ # 文件上传目录
+├── logs/ # 日志目录
+├── api_keys.json # API 密钥存储文件
+├── Dockerfile # Docker 配置文件
 ├── docker-compose.yml # Docker Compose 配置
-├── requirements.txt   # Python 依赖
-└── deploy.sh          # 部署脚本
+├── requirements.txt # Python 依赖
+└── deploy.sh # 部署脚本
+└── update.sh # 升级脚本
+
 
 ## 环境要求
 
@@ -128,6 +147,12 @@ MIT License
 欢迎提交 Issue 和 Pull Request！
 
 ## 更新日志
+
+### v1.1.0
+- 添加国内镜像源支持
+- 优化文件上传界面
+- 完善错误处理
+- 更新部署文档
 
 ### v1.0.0
 - 初始版本发布
