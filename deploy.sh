@@ -11,15 +11,23 @@ echo -e "${BLUE}开始部署 CM-File-Cabinet...${NC}"
 mkdir -p cm-file-cabinet
 cd cm-file-cabinet
 
-# 下载必要的文件
+# 下载所有必要的文件
 echo -e "${BLUE}下载必要的文件...${NC}"
-curl -O https://raw.githubusercontent.com/clover-eric/cm-file-cabinet/main/docker-compose.yml
-curl -O https://raw.githubusercontent.com/clover-eric/cm-file-cabinet/main/Dockerfile
+for file in docker-compose.yml Dockerfile requirements.txt app.py; do
+    curl -O https://raw.githubusercontent.com/clover-eric/cm-file-cabinet/main/$file
+done
 
-# 创建必要的目录和文件
-echo -e "${BLUE}创建必要的目录和文件...${NC}"
-mkdir -p uploads logs
+# 创建目录结构
+echo -e "${BLUE}创建目录结构...${NC}"
+mkdir -p static/{css,js} templates uploads logs
 touch api_keys.json
+
+# 下载静态文件和模板
+curl -o static/css/styles.css https://raw.githubusercontent.com/clover-eric/cm-file-cabinet/main/static/css/styles.css
+curl -o static/js/scripts.js https://raw.githubusercontent.com/clover-eric/cm-file-cabinet/main/static/js/scripts.js
+curl -o templates/index.html https://raw.githubusercontent.com/clover-eric/cm-file-cabinet/main/templates/index.html
+
+# 设置权限
 chmod 755 uploads logs
 
 # 检查 Docker 是否安装
@@ -28,7 +36,6 @@ if ! command -v docker &> /dev/null; then
     curl -fsSL https://get.docker.com | sh
     sudo systemctl start docker
     sudo systemctl enable docker
-    # 添加当前用户到 docker 组
     sudo usermod -aG docker $USER
     newgrp docker
 fi

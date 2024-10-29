@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   file-cabinet:
-    image: clovereric/cm-file-cabinet:latest
+    build: .
     container_name: cm-file-cabinet
     restart: always
     ports:
