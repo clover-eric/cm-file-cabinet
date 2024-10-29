@@ -106,23 +106,44 @@ def load_api_keys():
 
 def save_api_key(api_key):
     """保存API密钥"""
-    api_keys = load_api_keys()
-    api_keys[api_key] = {
-        'created_at': time.time(),
-        'last_used': None
-    }
-    with open(app.config['API_KEYS_FILE'], 'w') as f:
-        json.dump(api_keys, f)
+    try:
+        api_keys = load_api_keys()
+        api_keys[api_key] = {
+            'created_at': time.time(),
+            'last_used': None
+        }
+        
+        # 确保目录存在
+        os.makedirs(os.path.dirname(app.config['API_KEYS_FILE']), exist_ok=True)
+        
+        # 保存到文件
+        with open(app.config['API_KEYS_FILE'], 'w') as f:
+            json.dump(api_keys, f, indent=4)
+            
+    except Exception as e:
+        app.logger.error(f"Error saving API key: {e}")
+        raise
 
 @app.route('/generate-api-key', methods=['POST'])
-def generate_new_api_key():
-    """生成新的API密钥的路由"""
-    api_key = generate_api_key()
-    save_api_key(api_key)
-    return jsonify({
-        'status': 'success',
-        'api_key': api_key
-    })
+def generate_api_key_route():
+    try:
+        # 生成新的 API 密钥
+        api_key = generate_api_key()
+        
+        # 保存 API 密钥
+        save_api_key(api_key)
+        
+        return jsonify({
+            'status': 'success',
+            'api_key': api_key
+        }), 200
+        
+    except Exception as e:
+        app.logger.error(f"Error generating API key: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': '生成 API 密钥失败，请重试'
+        }), 500
 
 # 修改上传路由，添加API密钥验证
 @app.route('/upload', methods=['POST'])

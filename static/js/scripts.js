@@ -258,8 +258,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (generateApiKeyBtn) {
         generateApiKeyBtn.addEventListener('click', async function() {
             try {
+                // 添加错误处理和重试机制
                 const response = await fetch('/generate-api-key', {
-                    method: 'POST'
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    // 添加超时设置
+                    timeout: 5000
                 });
                 
                 if (response.ok) {
@@ -282,11 +288,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         showAlert('success', 'API 密钥生成成功！');
                     }
                 } else {
-                    showAlert('danger', '生成 API 密钥失败，请重试');
+                    const errorData = await response.json();
+                    showAlert('danger', errorData.message || '生成 API 密钥失败，请重试');
                 }
             } catch (err) {
                 console.error('Error:', err);
-                showAlert('danger', '操作失败，请检查网络连接');
+                showAlert('danger', '网络错误，请检查连接后重试');
             }
         });
     }
