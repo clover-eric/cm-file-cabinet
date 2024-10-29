@@ -1,0 +1,834 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(120deg, #f0f7ff 0%, #e8f0ff 50%, #f5f7ff 100%);
+    position: relative;
+    overflow-x: hidden;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* 动态背景网格 */
+body::before {
+    content: '';
+    position: fixed;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+    background-size: 30px 30px;
+    transform: rotate(30deg);
+    animation: gridMove 60s linear infinite;
+    z-index: -2;
+}
+
+/* 动态光晕效果 */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, 
+                              rgba(116, 168, 255, 0.1) 0%,
+                              rgba(13, 110, 253, 0.05) 25%,
+                              transparent 50%);
+    animation: pulseGlow 15s ease-in-out infinite;
+    z-index: -1;
+}
+
+/* 添加浮动装饰元素 */
+.decoration {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.5;
+    z-index: -1;
+}
+
+.decoration-1 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(45deg, rgba(64, 144, 255, 0.1), rgba(0, 82, 204, 0.1));
+    top: -150px;
+    left: -150px;
+    animation: float1 20s ease-in-out infinite;
+}
+
+.decoration-2 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(45deg, rgba(82, 156, 255, 0.1), rgba(13, 110, 253, 0.1));
+    bottom: -200px;
+    right: -200px;
+    animation: float2 25s ease-in-out infinite;
+}
+
+/* 动画定义 */
+@keyframes gridMove {
+    0% {
+        transform: rotate(30deg) translateY(0);
+    }
+    100% {
+        transform: rotate(30deg) translateY(-100px);
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.3;
+    }
+}
+
+@keyframes float1 {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    33% {
+        transform: translate(50px, 50px) rotate(10deg);
+    }
+    66% {
+        transform: translate(-30px, 70px) rotate(-5deg);
+    }
+}
+
+@keyframes float2 {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    33% {
+        transform: translate(-70px, -40px) rotate(-10deg);
+    }
+    66% {
+        transform: translate(40px, -60px) rotate(5deg);
+    }
+}
+
+.card {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 24px;
+    transition: all 0.4s ease;
+    box-shadow: 
+        0 8px 32px 0 rgba(31, 38, 135, 0.1),
+        0 4px 8px 0 rgba(13, 110, 253, 0.05),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 
+        0 15px 45px 0 rgba(31, 38, 135, 0.15),
+        0 8px 16px 0 rgba(13, 110, 253, 0.1),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+.border-dashed {
+    border: 2px dashed #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.border-dashed:hover {
+    border-color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 0.8rem 2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.btn-outline-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2);
+}
+
+.progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: rgba(233, 236, 239, 0.5);
+    overflow: hidden;
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease-in-out;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.alert.fade {
+    transition: all 0.3s ease-in-out;
+}
+
+.alert.fade:not(.show) {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.drag-over {
+    border-color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+#dropZone {
+    cursor: pointer;
+}
+
+/* 在文件末尾添加 */
+svg {
+    stroke: #0d6efd;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover svg {
+    transform: translateY(-5px);
+    stroke: #0a58ca;
+}
+
+h1 svg {
+    stroke: #2563eb;
+    stroke-width: 1.5;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cabinet-body {
+    fill: rgba(37, 99, 235, 0.05);
+    stroke: #2563eb;
+}
+
+.drawer-line {
+    stroke: #2563eb;
+    stroke-width: 1.5;
+    opacity: 0.6;
+}
+
+.handle {
+    stroke: #2563eb;
+    stroke-width: 2;
+    opacity: 0.8;
+}
+
+/* 上传图标样式 */
+.upload-icon {
+    width: 56px;
+    height: 56px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-circle {
+    fill: rgba(37, 99, 235, 0.05);
+    stroke: #2563eb;
+    transition: all 0.3s ease;
+}
+
+.upload-arrow, .icon-x {
+    stroke: #2563eb;
+    transition: all 0.3s ease;
+}
+
+/* 悬停效果 */
+.upload-area:hover .upload-icon {
+    transform: translateY(-2px);
+}
+
+.upload-area:hover .icon-circle {
+    fill: rgba(37, 99, 235, 0.08);
+    stroke: #1d4ed8;
+}
+
+.upload-area:hover .upload-arrow {
+    stroke: #1d4ed8;
+}
+
+/* 文件已上传状态 */
+.upload-area.has-file .upload-icon {
+    stroke: #dc2626;
+}
+
+.upload-area.has-file .icon-circle {
+    fill: rgba(220, 38, 38, 0.05);
+    stroke: #dc2626;
+}
+
+.upload-area.has-file .upload-arrow {
+    stroke: #dc2626;
+}
+
+/* 现代按钮样式 */
+.btn-modern {
+    position: relative;
+    background: linear-gradient(45deg, #4a90e2, #2d7dd2);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 28px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+}
+
+.btn-modern:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(45deg, #2d7dd2, #1d4ed8);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
+    color: white;
+}
+
+.btn-modern:active {
+    transform: translateY(0);
+    background: linear-gradient(45deg, #1d4ed8, #1e40af);
+    box-shadow: 0 2px 10px rgba(74, 144, 226, 0.2);
+}
+
+/* 文件已上传状态的样式 */
+.upload-area.has-file .btn-modern {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+}
+
+.upload-area.has-file .btn-modern:hover {
+    background: linear-gradient(45deg, #b91c1c, #991b1b);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+    color: white;
+}
+
+.upload-area.has-file .upload-icon {
+    stroke: #dc3545;
+}
+
+.upload-area.has-file .cloud-shape {
+    fill: rgba(220, 38, 38, 0.05);
+}
+
+/* 上传区域样式 */
+.upload-area {
+    border: 2px dashed rgba(37, 99, 235, 0.2);
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.upload-area:hover {
+    border-color: rgba(37, 99, 235, 0.4);
+    background-color: rgba(37, 99, 235, 0.02);
+}
+
+.upload-text {
+    color: #4b5563;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover .upload-text {
+    color: #2563eb;
+}
+
+/* 拖拽状态 */
+.upload-area.drag-over {
+    border-color: #2563eb;
+    background-color: rgba(37, 99, 235, 0.05);
+}
+
+/* 复制按钮样式 */
+.copy-btn {
+    border-color: #2563eb;
+    color: #2563eb;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.copy-btn:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+    color: white;
+}
+
+/* 复制成功反馈 */
+.copy-feedback {
+    position: absolute;
+    top: 50%;
+    right: 120px;
+    transform: translateY(-50%);
+    background: rgba(25, 135, 84, 0.9);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.copy-feedback.show {
+    opacity: 1;
+    right: 110px;
+}
+
+/* 输入框焦点样式 */
+.file-url:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15) !important;
+}
+
+/* 动画优化 */
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.file-url-section.show {
+    animation: slideDown 0.5s ease forwards;
+}
+
+/* 添加禁用状态样式 */
+.upload-area.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.upload-area.disabled button {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    color: #6c757d;
+}
+
+.upload-area.disabled svg {
+    stroke: #6c757d;
+}
+
+/* 文件已上传状态的样式 */
+.upload-area.has-file {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.upload-area.has-file .btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+    transition: all 0.3s ease;
+}
+
+.upload-area.has-file .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.upload-area.has-file svg {
+    stroke: #dc3545;
+    transition: all 0.3s ease;
+}
+
+.upload-area.has-file:hover svg {
+    transform: rotate(15deg);
+}
+
+/* 美化上传图标 */
+.upload-icon {
+    width: 64px;
+    height: 64px;
+    transition: all 0.3s ease;
+}
+
+.upload-icon .cloud-shape {
+    stroke: #4a90e2;
+    stroke-width: 1.5;
+    transition: all 0.3s ease;
+}
+
+.upload-icon .upload-arrow {
+    stroke: #4a90e2;
+    stroke-width: 2;
+    transition: all 0.3s ease;
+}
+
+.upload-icon .cloud-back {
+    stroke: #4a90e2;
+    stroke-width: 1.5;
+    opacity: 0.6;
+}
+
+/* 悬停效果 */
+.upload-area:hover .upload-icon {
+    transform: translateY(-2px);
+}
+
+.upload-area:hover .cloud-shape {
+    stroke: #2d7dd2;
+}
+
+.upload-area:hover .upload-arrow {
+    stroke: #2d7dd2;
+    transform: translateY(-2px);
+}
+
+/* 现代按钮样式 */
+.btn-modern {
+    position: relative;
+    background: linear-gradient(45deg, #4a90e2, #2d7dd2);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 28px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+}
+
+.btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
+    color: white;
+}
+
+.btn-modern:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(74, 144, 226, 0.2);
+}
+
+.btn-modern .btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+/* 文件已上传状态的按钮样式 */
+.upload-area.has-file .btn-modern {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+}
+
+.upload-area.has-file .btn-modern:hover {
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+}
+
+.upload-area.has-file .upload-icon {
+    stroke: #dc3545;
+}
+
+.upload-area.has-file .cloud-shape,
+.upload-area.has-file .upload-arrow,
+.upload-area.has-file .cloud-back {
+    stroke: #dc3545;
+}
+
+/* 上传区域样式优化 */
+.upload-area {
+    border: 2px dashed rgba(74, 144, 226, 0.2);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: rgba(74, 144, 226, 0.4);
+    background-color: rgba(74, 144, 226, 0.02);
+}
+
+.upload-text {
+    color: #6c757d;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover .upload-text {
+    color: #4a90e2;
+}
+
+/* 拖拽状态样式 */
+.upload-area.drag-over {
+    border-color: #4a90e2;
+    background-color: rgba(74, 144, 226, 0.05);
+}
+
+/* 修改上传图标样式 */
+.upload-icon {
+    width: 56px;
+    height: 56px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-circle {
+    fill: rgba(37, 99, 235, 0.05);
+    stroke: #2563eb;
+    transition: all 0.3s ease;
+}
+
+.upload-arrow, .icon-x {
+    stroke: #2563eb;
+    transition: all 0.3s ease;
+}
+
+/* 文件已满状态的样式 */
+.upload-area.has-file .icon-circle {
+    fill: rgba(220, 38, 38, 0.08);
+    stroke: #dc2626;
+}
+
+.upload-area.has-file .icon-x {
+    stroke: #dc2626;
+}
+
+/* 危险按钮样式 */
+.btn-modern-danger {
+    position: relative;
+    background: linear-gradient(45deg, #dc2626, #b91c1c);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 28px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.2);
+}
+
+.btn-modern-danger:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(45deg, #b91c1c, #991b1b);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+    color: white;
+}
+
+.btn-modern-danger:active {
+    transform: translateY(0);
+    background: linear-gradient(45deg, #991b1b, #7f1d1d);
+    box-shadow: 0 2px 10px rgba(220, 38, 38, 0.2);
+}
+
+/* 上传区域已满状态 */
+.upload-area.has-file {
+    border-color: rgba(220, 38, 38, 0.3);
+    background-color: rgba(220, 38, 38, 0.02);
+}
+
+.upload-area.has-file .upload-text {
+    color: #dc2626;
+}
+
+.upload-area.has-file:hover {
+    border-color: rgba(220, 38, 38, 0.5);
+    background-color: rgba(220, 38, 38, 0.04);
+}
+
+/* API密钥部分的样式 */
+.code-block {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0;
+    font-size: 0.9rem;
+    position: relative;
+}
+
+.code-block code {
+    color: #333;
+    display: block;
+    overflow-x: auto;
+}
+
+.api-key-section {
+    opacity: 1;
+    transform: none;
+    margin-top: 3rem;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+}
+
+.api-key-section .btn-modern {
+    margin-bottom: 1rem;
+}
+
+#apiKeyContainer {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.code-block {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    border: 1px solid #e9ecef;
+    position: relative;
+}
+
+.code-block code {
+    white-space: pre-wrap;
+    color: #2d3748;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+}
+
+.api-key-section .btn-modern {
+    padding: 0.8rem 2rem;
+    font-size: 0.95rem;
+}
+
+.api-key-section .input-group {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.api-key-section .form-control {
+    border: 1px solid #e2e8f0;
+    padding: 0.8rem 1rem;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+.api-key-section .copy-btn {
+    padding: 0 1.2rem;
+    border: 1px solid #e2e8f0;
+    border-left: none;
+    color: #4a90e2;
+    background: #fff;
+    transition: all 0.2s ease;
+}
+
+.api-key-section .copy-btn:hover {
+    background: #f8fafc;
+    color: #2b6cb0;
+}
+
+/* 标题样式优化 */
+.api-section-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #4a5568;
+}
+
+.api-section-title i {
+    font-size: 1.2rem;
+    color: #4a90e2;
+}
+
+.api-section-title span {
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* 代码块和复制按钮样式 */
+.code-block {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    border: 1px solid #e9ecef;
+    position: relative;
+}
+
+.code-block code {
+    white-space: pre-wrap;
+    color: #2d3748;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    display: block;
+}
+
+/* 复制代���按钮样式 */
+.copy-code-btn {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    padding: 0.4rem;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    color: #4a90e2;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    opacity: 0.7;
+}
+
+.copy-code-btn:hover {
+    opacity: 1;
+    background: #f8fafc;
+    color: #2b6cb0;
+    border-color: #cbd5e0;
+}
+
+.copy-code-btn:active {
+    transform: translateY(1px);
+}
+
+.copy-code-btn i {
+    font-size: 0.9rem;
+}
+
+/* 添加复制成功的反馈效果 */
+.copy-code-btn.success {
+    color: #059669;
+    border-color: #059669;
+}
+
+/* 代码块标题样式 */
+.code-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0.8rem 1.2rem;
+    background: #f1f5f9;
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 9px 9px 0 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+/* 调整代码块的内边距，为标题留出空间 */
+.code-block {
+    padding-top: 3.2rem;  /* 增加顶部内边距，为标题腾出空间 */
+}
+
+/* 调整复制按钮的位置，避免与标题重叠 */
+.copy-code-btn {
+    top: 0.6rem;
+    right: 0.6rem;
+    z-index: 1;  /* 确保按钮在标题之上 */
+}
+
+/* 调整代码内容的位置 */
+.code-block code {
+    display: block;
+    position: relative;
+    z-index: 0;
+}

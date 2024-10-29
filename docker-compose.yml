@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  file-cabinet:
+    build: .
+    container_name: cm-file-cabinet
+    restart: always
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+      - ./api_keys.json:/app/api_keys.json
+    environment:
+      - TZ=Asia/Shanghai 
