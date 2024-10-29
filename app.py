@@ -8,10 +8,10 @@ from logging.handlers import RotatingFileHandler
 from functools import lru_cache
 import secrets
 import json
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, static_url_path='/static')
-
-# 修改配置，增加安全和访问控制设置
 app.config.update(
     UPLOAD_FOLDER='uploads',
     HOST='0.0.0.0',  # 允许外部访问
@@ -22,29 +22,104 @@ app.config.update(
     CORS_HEADERS='Content-Type',
     API_KEYS_FILE='api_keys.json',  # 存储API密钥的文件
 )
+app.config['SECRET_KEY'] = secrets.token_hex(16)  # 添加密钥用于session加密
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+# 用户模型
+class User(UserMixin):
+    def __init__(self, username):
+        self.username = username
+        
+    def get_id(self):
+        return self.username
+
+@login_manager.user_loader
+def load_user(username):
+    if username in load_users():
+        return User(username)
+    return None
+
+def load_users():
+    """加载用户信息"""
+    try:
+        with open('users.json', 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
+
+def save_users(users):
+    """保存用户信息"""
+    with open('users.json', 'w') as f:
+        json.dump(users, f, indent=4)
+
+# 登录路由
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        users = load_users()
+        
+        if username in users and check_password_hash(users[username]['password'], password):
+            user = User(username)
+            login_user(user)
+            return redirect(url_for('index'))
+        
+        return render_template('login.html', error='用户名或密码错误')
+    
+    return render_template('login.html')
+
+# 注册路由(仅允许第一个用户注册)
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    users = load_users()
+    if users:  # 如果已经有用户了,禁止注册
+        return redirect(url_for('login'))
+        
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        if username and password:
+            users[username] = {
+                'password': generate_password_hash(password),
+                'created_at': time.time()
+            }
+            save_users(users)
+            return redirect(url_for('login'))
+            
+    return render_template('register.html')
+
+# 登出路由
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+# 修改现有的路由,添加登录要求
+@app.route('/')
+@login_required
+def index():
+    return render_template('index.html')
 
 # 确保上传目录存在并设置正确的权限
 upload_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), app.config['UPLOAD_FOLDER'])
 os.makedirs(upload_dir, exist_ok=True)
 os.chmod(upload_dir, 0o755)  # 设置目录权限
 
-# 添加 CORS 支持
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
-    return response
-
 # 修改文件访问路由
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     try:
         return send_from_directory(
-            upload_dir, 
+            upload_dir,  # 使用正确定义的 upload_dir
             filename,
-            as_attachment=False,  # 在浏览器中直接显示
-            mimetype='text/plain'  # 指定 MIME 类型
+            as_attachment=False,
+            mimetype='text/plain'
         )
     except Exception as e:
         app.logger.error(f"Error serving file {filename}: {e}")
@@ -87,10 +162,6 @@ if not app.debug:
     app.logger.addHandler(file_handler)
     app.logger.setLevel(logging.INFO)
     app.logger.info('文件存储服务启动')
-
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 def generate_api_key():
     """生成新的API密钥"""
@@ -160,6 +231,7 @@ def generate_api_key_route():
 
 # 修改上传路由，添加API密钥验证
 @app.route('/upload', methods=['POST'])
+@login_required
 def upload_file():
     # 检查API密钥（如果存在）
     api_key = request.headers.get('X-API-Key')
@@ -246,21 +318,6 @@ def clear_files():
 def get_file_list():
     """缓存文件列表查询结果"""
     return os.listdir(app.config['UPLOAD_FOLDER'])
-
-# 定期清理过期文件
-def cleanup_old_files():
-    """清理超过24小时的文件"""
-    current_time = time.time()
-    for filename in os.listdir(app.config['UPLOAD_FOLDER']):
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        if os.path.isfile(file_path):
-            file_age = current_time - os.path.getmtime(file_path)
-            if file_age > 24 * 60 * 60:  # 24小时
-                try:
-                    os.remove(file_path)
-                    app.logger.info(f'Removed old file: {filename}')
-                except Exception as e:
-                    app.logger.error(f'Error removing old file {filename}: {e}')
 
 if __name__ == '__main__':
     # 使用 threaded=True 支持并发请求
