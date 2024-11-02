@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3301:3301"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:3302
+    depends_on:
+      - backend
+    networks:
+      - file-cabinet-network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3302:3302"
+    volumes:
+      - storage-data:/app/storage
+    environment:
+      - NODE_ENV=production
+      - PORT=3302
+      - STORAGE_PATH=/app/storage
+    networks:
+      - file-cabinet-network
+    restart: unless-stopped
+
+networks:
+  file-cabinet-network:
+    driver: bridge
+
+volumes:
+  storage-data:
+    driver: local 
